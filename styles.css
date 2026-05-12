@@ -261,6 +261,10 @@ summary svg {
   background: linear-gradient(135deg, #244f8f, #6b5bd6);
 }
 
+.loan-pay {
+  background: linear-gradient(135deg, #0f766e, #3066be);
+}
+
 .net-pay span {
   display: block;
   margin-bottom: 8px;

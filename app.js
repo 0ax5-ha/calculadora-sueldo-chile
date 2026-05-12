@@ -46,6 +46,13 @@ const fields = {
   closingCosts: document.querySelector("#closingCosts"),
   lifeInsurance: document.querySelector("#lifeInsurance"),
   monthlyMortgageFees: document.querySelector("#monthlyMortgageFees"),
+  loanAmount: document.querySelector("#loanAmount"),
+  loanMonths: document.querySelector("#loanMonths"),
+  loanRateMode: document.querySelector("#loanRateMode"),
+  loanRate: document.querySelector("#loanRate"),
+  loanInsurance: document.querySelector("#loanInsurance"),
+  loanInitialFees: document.querySelector("#loanInitialFees"),
+  loanPrepayment: document.querySelector("#loanPrepayment"),
 };
 
 const netPay = document.querySelector("#netPay");
@@ -54,6 +61,9 @@ const employerCost = document.querySelector("#employerCost");
 const monthlyPayment = document.querySelector("#monthlyPayment");
 const mortgageBreakdown = document.querySelector("#mortgageBreakdown");
 const rateNote = document.querySelector("#rateNote");
+const loanPayment = document.querySelector("#loanPayment");
+const loanBreakdown = document.querySelector("#loanBreakdown");
+const loanNote = document.querySelector("#loanNote");
 const budgetInputs = document.querySelector("#budgetInputs");
 const budgetDonut = document.querySelector("#budgetDonut");
 const budgetTotal = document.querySelector("#budgetTotal");
@@ -162,6 +172,7 @@ function calculate() {
   addRow(employerCost, "Costo total estimado", employerTotal, "positive");
 
   calculateMortgage();
+  calculateLoan();
   calculateBudget();
 }
 
@@ -207,6 +218,46 @@ function calculateMortgage() {
     mixed: "Interes mixto: normalmente parte fijo y luego puede variar. Aqui se estima con la tasa ingresada para comparar escenarios.",
   };
   rateNote.textContent = notes[fields.rateType.value];
+}
+
+function calculateLoan() {
+  const requestedAmount = numberFrom(fields.loanAmount);
+  const months = Math.max(1, numberFrom(fields.loanMonths));
+  const rateInput = Math.max(0, numberFrom(fields.loanRate));
+  const monthlyRate = fields.loanRateMode.value === "annual" ? rateInput / 100 / 12 : rateInput / 100;
+  const insurance = numberFrom(fields.loanInsurance);
+  const initialFees = numberFrom(fields.loanInitialFees);
+  const prepayment = Math.min(requestedAmount, Math.max(0, numberFrom(fields.loanPrepayment)));
+  const financedAmount = Math.max(0, requestedAmount - prepayment);
+  const basePayment = monthlyRate === 0
+    ? financedAmount / months
+    : financedAmount * (monthlyRate * (1 + monthlyRate) ** months) / ((1 + monthlyRate) ** months - 1);
+  const monthlyTotal = basePayment + insurance;
+  const totalInterest = Math.max(0, basePayment * months - financedAmount);
+  const totalInsurance = insurance * months;
+  const totalPaid = monthlyTotal * months + initialFees + prepayment;
+  const totalCost = financedAmount + totalInterest + totalInsurance + initialFees + prepayment;
+  const burden = lastLiquidSalary > 0 ? monthlyTotal / lastLiquidSalary * 100 : 0;
+
+  loanPayment.textContent = money(monthlyTotal);
+  loanBreakdown.replaceChildren();
+
+  addRow(loanBreakdown, "Monto solicitado", requestedAmount, "positive");
+  addRow(loanBreakdown, "Abono inicial", prepayment);
+  addRow(loanBreakdown, "Monto financiado", financedAmount);
+  addTextRow(loanBreakdown, "Tasa de interes mensual", `${(monthlyRate * 100).toFixed(3)}%`);
+  addRow(loanBreakdown, "Valor cuota base", basePayment);
+  addRow(loanBreakdown, "Seguro mensual", insurance);
+  addRow(loanBreakdown, "Comision / gastos iniciales", initialFees);
+  addRow(loanBreakdown, "Total intereses", totalInterest, "negative");
+  addRow(loanBreakdown, "Total seguros", totalInsurance, "negative");
+  addRow(loanBreakdown, "Total pagado", totalPaid, "positive");
+  addRow(loanBreakdown, "Costo total del credito", totalCost, "positive");
+  addTextRow(loanBreakdown, "Carga sobre sueldo liquido", `${burden.toFixed(1)}%`, burden > 20 ? "negative" : "positive");
+
+  loanNote.textContent = burden > 20
+    ? "Ojo: esta cuota supera el 20% del sueldo liquido estimado. Puede apretar mucho el presupuesto mensual."
+    : "La cuota queda bajo el 20% del sueldo liquido estimado, un rango mas comodo para comparar alternativas.";
 }
 
 function createBudgetInputs() {

@@ -15,11 +15,12 @@
           <p class="eyebrow">Chile 2026</p>
           <h1>Calculadora financiera personal</h1>
           <p class="intro">
-            Estima descuentos legales, salud, seguro de cesantia, dividendos hipotecarios y distribucion mensual.
+            Estima descuentos legales, dividendos hipotecarios, creditos de consumo y distribucion mensual.
           </p>
           <nav class="quick-nav" aria-label="Secciones">
             <a href="#sueldo"><i data-lucide="wallet"></i> Sueldo</a>
             <a href="#hipoteca"><i data-lucide="house"></i> Hipoteca</a>
+            <a href="#credito"><i data-lucide="credit-card"></i> Credito</a>
             <a href="#presupuesto"><i data-lucide="pie-chart"></i> Presupuesto</a>
           </nav>
         </div>
@@ -219,6 +220,90 @@
 
             <div class="breakdown" id="mortgageBreakdown"></div>
             <div class="rate-note" id="rateNote"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="section-block" id="credito" aria-label="Simulador de credito">
+        <div class="section-heading">
+          <h2>Credito</h2>
+          <span>Calcula cuota, intereses, seguros y costo total de un prestamo</span>
+        </div>
+
+        <div class="workspace">
+          <form class="panel input-panel" id="loanForm">
+            <div class="panel-title">
+              <i data-lucide="credit-card"></i>
+              <h2>Datos del prestamo</h2>
+            </div>
+
+            <div class="grid-two">
+              <label>
+                Monto solicitado
+                <div class="money-field">
+                  <span>$</span>
+                  <input id="loanAmount" type="text" inputmode="numeric" value="3000000" />
+                </div>
+              </label>
+              <label>
+                Plazo en meses
+                <input id="loanMonths" type="text" inputmode="numeric" value="36" />
+              </label>
+            </div>
+
+            <div class="grid-two">
+              <label>
+                Tipo de tasa
+                <select id="loanRateMode">
+                  <option value="monthly">Mensual</option>
+                  <option value="annual">Anual</option>
+                </select>
+              </label>
+              <label>
+                Tasa de interes (%)
+                <input id="loanRate" type="text" inputmode="decimal" value="1.6" />
+              </label>
+            </div>
+
+            <div class="grid-two">
+              <label>
+                Seguro mensual
+                <div class="money-field">
+                  <span>$</span>
+                  <input id="loanInsurance" type="text" inputmode="numeric" value="9000" />
+                </div>
+              </label>
+              <label>
+                Comision / gastos iniciales
+                <div class="money-field">
+                  <span>$</span>
+                  <input id="loanInitialFees" type="text" inputmode="numeric" value="45000" />
+                </div>
+              </label>
+            </div>
+
+            <label>
+              Prepago o abono inicial
+              <div class="money-field">
+                <span>$</span>
+                <input id="loanPrepayment" type="text" inputmode="numeric" value="0" />
+              </div>
+            </label>
+          </form>
+
+          <section class="panel results-panel" aria-live="polite">
+            <div class="panel-title">
+              <i data-lucide="receipt-text"></i>
+              <h2>Resultado del credito</h2>
+            </div>
+
+            <div class="net-pay loan-pay">
+              <span>Cuota mensual estimada</span>
+              <strong id="loanPayment">$0</strong>
+            </div>
+
+            <div class="breakdown" id="loanBreakdown"></div>
+            <div class="rate-note" id="loanNote"></div>
           </section>
         </div>
       </section>
