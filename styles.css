@@ -325,6 +325,44 @@ summary svg {
   line-height: 1.45;
 }
 
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfdfb;
+}
+
+table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+th,
+td {
+  padding: 11px 10px;
+  border-bottom: 1px solid var(--line);
+  text-align: right;
+  white-space: nowrap;
+}
+
+th:first-child,
+td:first-child {
+  text-align: left;
+}
+
+th {
+  color: var(--green-dark);
+  background: #eef5f1;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+tr:last-child td {
+  border-bottom: 0;
+}
+
 .budget-input-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 92px;
@@ -511,6 +549,10 @@ summary svg {
 
   .budget-input-row {
     grid-template-columns: 1fr 74px;
+  }
+
+  .table-wrap {
+    margin-inline: -4px;
   }
 }
 

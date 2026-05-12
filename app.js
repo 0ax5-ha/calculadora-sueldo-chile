@@ -64,6 +64,7 @@ const rateNote = document.querySelector("#rateNote");
 const loanPayment = document.querySelector("#loanPayment");
 const loanBreakdown = document.querySelector("#loanBreakdown");
 const loanNote = document.querySelector("#loanNote");
+const loanAmortizationTable = document.querySelector("#loanAmortizationTable");
 const budgetInputs = document.querySelector("#budgetInputs");
 const budgetDonut = document.querySelector("#budgetDonut");
 const budgetTotal = document.querySelector("#budgetTotal");
@@ -258,6 +259,63 @@ function calculateLoan() {
   loanNote.textContent = burden > 20
     ? "Ojo: esta cuota supera el 20% del sueldo liquido estimado. Puede apretar mucho el presupuesto mensual."
     : "La cuota queda bajo el 20% del sueldo liquido estimado, un rango mas comodo para comparar alternativas.";
+
+  renderLoanAmortization(financedAmount, months, monthlyRate, basePayment, insurance);
+}
+
+function renderLoanAmortization(financedAmount, months, monthlyRate, basePayment, insurance) {
+  let balance = financedAmount;
+  let totalInterest = 0;
+  let totalPrincipal = 0;
+  let rows = "";
+
+  for (let month = 1; month <= months; month += 1) {
+    const interest = balance * monthlyRate;
+    const principal = Math.min(balance, Math.max(0, basePayment - interest));
+    const payment = principal + interest + insurance;
+    balance = Math.max(0, balance - principal);
+    totalInterest += interest;
+    totalPrincipal += principal;
+
+    rows += `
+      <tr>
+        <td>Mes ${month}</td>
+        <td>${money(payment)}</td>
+        <td>${money(interest)}</td>
+        <td>${money(principal)}</td>
+        <td>${money(insurance)}</td>
+        <td>${money(balance)}</td>
+      </tr>
+    `;
+  }
+
+  loanAmortizationTable.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Periodo</th>
+          <th>Cuota</th>
+          <th>Interes</th>
+          <th>Amortizacion</th>
+          <th>Seguro</th>
+          <th>Saldo</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+      <tfoot>
+        <tr>
+          <th>Total</th>
+          <th>${money(totalPrincipal + totalInterest + insurance * months)}</th>
+          <th>${money(totalInterest)}</th>
+          <th>${money(totalPrincipal)}</th>
+          <th>${money(insurance * months)}</th>
+          <th>${money(0)}</th>
+        </tr>
+      </tfoot>
+    </table>
+  `;
 }
 
 function createBudgetInputs() {
