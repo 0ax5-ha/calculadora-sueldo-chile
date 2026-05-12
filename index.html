@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora de sueldo liquido Chile</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Chile 2026</p>
+          <h1>Calculadora financiera personal</h1>
+          <p class="intro">
+            Estima descuentos legales, salud, seguro de cesantia, dividendos hipotecarios y distribucion mensual.
+          </p>
+          <nav class="quick-nav" aria-label="Secciones">
+            <a href="#sueldo"><i data-lucide="wallet"></i> Sueldo</a>
+            <a href="#hipoteca"><i data-lucide="house"></i> Hipoteca</a>
+            <a href="#presupuesto"><i data-lucide="pie-chart"></i> Presupuesto</a>
+          </nav>
+        </div>
+      </section>
+
+      <section class="section-block" id="sueldo" aria-label="Calculadora previsional">
+        <div class="section-heading">
+          <h2>Sueldo y descuentos</h2>
+          <span>Base para el resto de la planificacion</span>
+        </div>
+      </section>
+
+      <section class="workspace" aria-label="Sueldo y descuentos previsionales">
+        <form class="panel input-panel" id="salaryForm">
+          <div class="panel-title">
+            <i data-lucide="calculator"></i>
+            <h2>Datos del sueldo</h2>
+          </div>
+
+          <label>
+            Sueldo bruto imponible
+            <div class="money-field">
+              <span>$</span>
+              <input id="grossSalary" type="text" inputmode="numeric" value="1200000" />
+            </div>
+          </label>
+
+          <div class="grid-two">
+            <label>
+              AFP
+              <select id="afp"></select>
+            </label>
+            <label>
+              Tipo de contrato
+              <select id="contractType">
+                <option value="indefinido">Indefinido</option>
+                <option value="plazo">Plazo fijo / obra</option>
+                <option value="honorarios">Honorarios</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="grid-two">
+            <label>
+              Salud
+              <select id="healthType">
+                <option value="fonasa">Fonasa / 7%</option>
+                <option value="isapre">Isapre con plan en UF</option>
+              </select>
+            </label>
+            <label>
+              Plan Isapre en UF
+              <input id="isapreUf" type="text" inputmode="decimal" value="0" />
+            </label>
+          </div>
+
+          <details>
+            <summary><i data-lucide="sliders-horizontal"></i> Ajustes opcionales</summary>
+            <div class="grid-two details-grid">
+              <label>
+                Valor UF
+                <input id="ufValue" type="text" inputmode="numeric" value="39000" />
+              </label>
+              <label>
+                Tope imponible AFP/salud en UF
+                <input id="afpCapUf" type="text" inputmode="decimal" value="90" />
+              </label>
+              <label>
+                Tope seguro cesantia en UF
+                <input id="unemploymentCapUf" type="text" inputmode="decimal" value="135.2" />
+              </label>
+              <label>
+                Valor UTM
+                <input id="utmValue" type="text" inputmode="numeric" value="70588" />
+              </label>
+              <label>
+                APV mensual
+                <input id="apv" type="text" inputmode="numeric" value="0" />
+              </label>
+              <label>
+                Anticipos u otros descuentos
+                <input id="otherDiscounts" type="text" inputmode="numeric" value="0" />
+              </label>
+              <label>
+                Tasa SIS empleador (%)
+                <input id="sisRate" type="text" inputmode="decimal" value="1.54" />
+              </label>
+            </div>
+          </details>
+        </form>
+
+        <section class="panel results-panel" aria-live="polite">
+          <div class="panel-title">
+            <i data-lucide="wallet-cards"></i>
+            <h2>Resultado</h2>
+          </div>
+
+          <div class="net-pay">
+            <span>Sueldo liquido estimado</span>
+            <strong id="netPay">$0</strong>
+          </div>
+
+          <div class="breakdown" id="breakdown"></div>
+
+          <div class="panel-title small">
+            <i data-lucide="building-2"></i>
+            <h2>Costo empleador estimado</h2>
+          </div>
+          <div class="employer-cost" id="employerCost"></div>
+        </section>
+      </section>
+
+      <section class="section-block" id="hipoteca" aria-label="Simulador hipotecario">
+        <div class="section-heading">
+          <h2>Hipoteca</h2>
+          <span>Simula dividendo, intereses y carga sobre tu sueldo liquido</span>
+        </div>
+
+        <div class="workspace">
+          <form class="panel input-panel" id="mortgageForm">
+            <div class="panel-title">
+              <i data-lucide="house"></i>
+              <h2>Datos del credito</h2>
+            </div>
+
+            <div class="grid-two">
+              <label>
+                Precio vivienda
+                <div class="money-field">
+                  <span>$</span>
+                  <input id="homePrice" type="text" inputmode="numeric" value="80000000" />
+                </div>
+              </label>
+              <label>
+                Pie inicial (%)
+                <input id="downPaymentPercent" type="text" inputmode="decimal" value="20" />
+              </label>
+            </div>
+
+            <div class="grid-two">
+              <label>
+                Plazo en anos
+                <input id="mortgageYears" type="text" inputmode="numeric" value="20" />
+              </label>
+              <label>
+                Interes anual (%)
+                <input id="annualRate" type="text" inputmode="decimal" value="4.8" />
+              </label>
+            </div>
+
+            <div class="grid-two">
+              <label>
+                Tipo de interes
+                <select id="rateType">
+                  <option value="fixed">Fijo</option>
+                  <option value="variable">Variable</option>
+                  <option value="mixed">Mixto</option>
+                </select>
+              </label>
+              <label>
+                Gastos operacionales
+                <div class="money-field">
+                  <span>$</span>
+                  <input id="closingCosts" type="text" inputmode="numeric" value="1200000" />
+                </div>
+              </label>
+            </div>
+
+            <div class="grid-two">
+              <label>
+                Seguro desgravamen mensual
+                <div class="money-field">
+                  <span>$</span>
+                  <input id="lifeInsurance" type="text" inputmode="numeric" value="18000" />
+                </div>
+              </label>
+              <label>
+                Otros seguros / gastos mensuales
+                <div class="money-field">
+                  <span>$</span>
+                  <input id="monthlyMortgageFees" type="text" inputmode="numeric" value="12000" />
+                </div>
+              </label>
+            </div>
+          </form>
+
+          <section class="panel results-panel" aria-live="polite">
+            <div class="panel-title">
+              <i data-lucide="landmark"></i>
+              <h2>Resultado hipotecario</h2>
+            </div>
+
+            <div class="net-pay mortgage-pay">
+              <span>Dividendo mensual estimado</span>
+              <strong id="monthlyPayment">$0</strong>
+            </div>
+
+            <div class="breakdown" id="mortgageBreakdown"></div>
+            <div class="rate-note" id="rateNote"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="section-block" id="presupuesto" aria-label="Presupuesto mensual">
+        <div class="section-heading">
+          <h2>Distribucion del dinero</h2>
+          <span>Divide tu sueldo liquido en porcentajes y mira cuanto queda libre</span>
+        </div>
+
+        <div class="workspace planner-grid">
+          <form class="panel input-panel" id="budgetForm">
+            <div class="panel-title">
+              <i data-lucide="pie-chart"></i>
+              <h2>Porcentajes</h2>
+            </div>
+
+            <div id="budgetInputs"></div>
+          </form>
+
+          <section class="panel results-panel" aria-live="polite">
+            <div class="panel-title">
+              <i data-lucide="chart-no-axes-column"></i>
+              <h2>Vista mensual</h2>
+            </div>
+
+            <div class="budget-chart">
+              <div class="donut" id="budgetDonut"></div>
+              <div>
+                <span class="mini-label">Total asignado</span>
+                <strong id="budgetTotal">$0</strong>
+                <span class="mini-label" id="budgetStatus">0% usado</span>
+              </div>
+            </div>
+
+            <div class="budget-list" id="budgetList"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="notes">
+        <div>
+          <i data-lucide="info"></i>
+          <p>
+            Es una estimacion educativa. No reemplaza una liquidacion oficial y no cubre licencias, bonos no imponibles,
+            asignacion familiar, gratificacion legal, reliquidaciones u otros casos especiales.
+          </p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
