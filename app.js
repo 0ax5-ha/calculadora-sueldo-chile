@@ -55,6 +55,7 @@ const fields = {
   loanPrepayment: document.querySelector("#loanPrepayment"),
 };
 
+const themeToggle = document.querySelector("#themeToggle");
 const netPay = document.querySelector("#netPay");
 const breakdown = document.querySelector("#breakdown");
 const employerCost = document.querySelector("#employerCost");
@@ -206,8 +207,12 @@ function calculateMortgage() {
   addRow(mortgageBreakdown, "Monto credito", principal);
   addTextRow(mortgageBreakdown, "Tasa de interes mensual", `${(monthlyRate * 100).toFixed(3)}%`);
   addRow(mortgageBreakdown, "Valor cuota base", baseInstallment);
-  addRow(mortgageBreakdown, "Seguro desgravamen mensual", lifeInsurance);
-  addRow(mortgageBreakdown, "Gastos asociados mensuales", monthlyFees);
+  if (lifeInsurance > 0) {
+    addRow(mortgageBreakdown, "Seguro desgravamen mensual", lifeInsurance);
+  }
+  if (monthlyFees > 0) {
+    addRow(mortgageBreakdown, "Gastos asociados mensuales", monthlyFees);
+  }
   addRow(mortgageBreakdown, "Gastos operacionales iniciales", closingCosts);
   addRow(mortgageBreakdown, "Total intereses", totalInterest, "negative");
   addRow(mortgageBreakdown, "Costo total estimado", totalCost, "positive");
@@ -248,10 +253,14 @@ function calculateLoan() {
   addRow(loanBreakdown, "Monto financiado", financedAmount);
   addTextRow(loanBreakdown, "Tasa de interes mensual", `${(monthlyRate * 100).toFixed(3)}%`);
   addRow(loanBreakdown, "Valor cuota base", basePayment);
-  addRow(loanBreakdown, "Seguro mensual", insurance);
+  if (insurance > 0) {
+    addRow(loanBreakdown, "Seguro mensual", insurance);
+  }
   addRow(loanBreakdown, "Comision / gastos iniciales", initialFees);
   addRow(loanBreakdown, "Total intereses", totalInterest, "negative");
-  addRow(loanBreakdown, "Total seguros", totalInsurance, "negative");
+  if (insurance > 0) {
+    addRow(loanBreakdown, "Total seguros", totalInsurance, "negative");
+  }
   addRow(loanBreakdown, "Total pagado", totalPaid, "positive");
   addRow(loanBreakdown, "Costo total del credito", totalCost, "positive");
   addTextRow(loanBreakdown, "Carga sobre sueldo liquido", `${burden.toFixed(1)}%`, burden > 20 ? "negative" : "positive");
@@ -264,6 +273,7 @@ function calculateLoan() {
 }
 
 function renderLoanAmortization(financedAmount, months, monthlyRate, basePayment, insurance) {
+  const hasInsurance = insurance > 0;
   let balance = financedAmount;
   let totalInterest = 0;
   let totalPrincipal = 0;
@@ -283,7 +293,7 @@ function renderLoanAmortization(financedAmount, months, monthlyRate, basePayment
         <td>${money(payment)}</td>
         <td>${money(interest)}</td>
         <td>${money(principal)}</td>
-        <td>${money(insurance)}</td>
+        ${hasInsurance ? `<td>${money(insurance)}</td>` : ""}
         <td>${money(balance)}</td>
       </tr>
     `;
@@ -297,7 +307,7 @@ function renderLoanAmortization(financedAmount, months, monthlyRate, basePayment
           <th>Cuota</th>
           <th>Interes</th>
           <th>Amortizacion</th>
-          <th>Seguro</th>
+          ${hasInsurance ? "<th>Seguro</th>" : ""}
           <th>Saldo</th>
         </tr>
       </thead>
@@ -310,12 +320,34 @@ function renderLoanAmortization(financedAmount, months, monthlyRate, basePayment
           <th>${money(totalPrincipal + totalInterest + insurance * months)}</th>
           <th>${money(totalInterest)}</th>
           <th>${money(totalPrincipal)}</th>
-          <th>${money(insurance * months)}</th>
+          ${hasInsurance ? `<th>${money(insurance * months)}</th>` : ""}
           <th>${money(0)}</th>
         </tr>
       </tfoot>
     </table>
   `;
+}
+
+function applyTheme(theme) {
+  const isDark = theme === "dark";
+  document.documentElement.dataset.theme = theme;
+  themeToggle.setAttribute("aria-pressed", String(isDark));
+  themeToggle.innerHTML = `<i data-lucide="${isDark ? "sun" : "moon"}"></i><span>${isDark ? "Modo claro" : "Modo oscuro"}</span>`;
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
+}
+
+function setupTheme() {
+  const savedTheme = localStorage.getItem("theme");
+  const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  applyTheme(savedTheme || (prefersDark ? "dark" : "light"));
+
+  themeToggle.addEventListener("click", () => {
+    const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    localStorage.setItem("theme", nextTheme);
+    applyTheme(nextTheme);
+  });
 }
 
 function createBudgetInputs() {
@@ -389,6 +421,8 @@ function calculateBudget() {
 }
 
 function setup() {
+  setupTheme();
+
   afpRates.forEach((afp) => {
     const option = document.createElement("option");
     option.value = afp.id;

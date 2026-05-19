@@ -15,6 +15,23 @@
   --shadow: 0 18px 45px rgba(23, 33, 27, 0.12);
 }
 
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ink: #edf7ef;
+  --muted: #a9b9ae;
+  --line: #2d4437;
+  --surface: #15231b;
+  --soft: #1b3025;
+  --green: #42c987;
+  --green-dark: #76e2aa;
+  --blue: #78a6ff;
+  --rose: #ff788b;
+  --violet: #a99dff;
+  --cyan: #58d4e5;
+  --amber: #f0bd5a;
+  --shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -32,6 +49,13 @@ body {
     linear-gradient(135deg, rgba(31, 138, 87, 0.16), transparent 34%),
     linear-gradient(315deg, rgba(48, 102, 190, 0.15), transparent 30%),
     #f6f8f6;
+}
+
+:root[data-theme="dark"] body {
+  background:
+    linear-gradient(135deg, rgba(66, 201, 135, 0.14), transparent 34%),
+    linear-gradient(315deg, rgba(120, 166, 255, 0.12), transparent 30%),
+    #0f1712;
 }
 
 button,
@@ -59,6 +83,38 @@ select {
   font-weight: 700;
   letter-spacing: 0;
   text-transform: uppercase;
+}
+
+.top-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  max-width: 760px;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 12px;
+  color: var(--green-dark);
+  background: rgba(255, 255, 255, 0.74);
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+:root[data-theme="dark"] .theme-toggle,
+:root[data-theme="dark"] .quick-nav a {
+  background: rgba(21, 35, 27, 0.78);
 }
 
 h1,
@@ -145,6 +201,10 @@ h1 {
   box-shadow: var(--shadow);
 }
 
+:root[data-theme="dark"] .panel {
+  background: rgba(21, 35, 27, 0.94);
+}
+
 .input-panel,
 .results-panel {
   padding: 22px;
@@ -182,6 +242,10 @@ label {
   font-weight: 700;
 }
 
+:root[data-theme="dark"] label {
+  color: #d6e6db;
+}
+
 input,
 select {
   width: 100%;
@@ -192,6 +256,16 @@ select {
   color: var(--ink);
   background: #fbfdfb;
   font-size: 16px;
+}
+
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] .money-field,
+:root[data-theme="dark"] .budget-chart,
+:root[data-theme="dark"] .table-wrap {
+  color: var(--ink);
+  background: #101d16;
+  border-color: var(--line);
 }
 
 input:focus,
@@ -359,6 +433,22 @@ th {
   text-transform: uppercase;
 }
 
+:root[data-theme="dark"] th {
+  background: #1b3025;
+}
+
+:root[data-theme="dark"] .donut::after {
+  background: #101d16;
+}
+
+:root[data-theme="dark"] .budget-bar {
+  background: #273b30;
+}
+
+:root[data-theme="dark"] .notes div {
+  background: rgba(21, 35, 27, 0.76);
+}
+
 tr:last-child td {
   border-bottom: 0;
 }
@@ -507,6 +597,17 @@ tr:last-child td {
   }
 
   .quick-nav a {
+    justify-content: center;
+    min-height: 46px;
+  }
+
+  .top-line {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .theme-toggle {
     justify-content: center;
     min-height: 46px;
   }
